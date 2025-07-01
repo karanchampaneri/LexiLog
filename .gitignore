@@ -110,6 +110,8 @@ temp/
 *.bundle
 
 # CocoaPods (iOS)
+ios/
+android/
 ios/Pods/
 ios/Podfile.lock
 
