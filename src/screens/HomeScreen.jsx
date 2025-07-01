@@ -13,7 +13,7 @@ import PreferencesScreen from "./PreferencesScreen";
 
 export default function HomeScreen() {
   const [words, setWords] = useState([]); // stores the list of words when a new word is added.
-  const [showPreferences, setShowPreferences] = useState(false); // state to manage navigation to preferences screen
+  const [showPreferences, setShowPreferences] = useState(false); // state to manage preferences sheet visibility
   const [showAddWordSheet, setShowAddWordSheet] = useState(false); // state to manage add word sheet visibility
 
   useEffect(() => {
@@ -30,11 +30,6 @@ export default function HomeScreen() {
     setWords((prevWords) => [...prevWords, newWord]); // adds the new word to the list
     await saveWords(updatedWords); // saves the updated words list to storage
   };
-
-  // If preferences screen should be shown, render it instead of home
-  if (showPreferences) {
-    return <PreferencesScreen onBack={() => setShowPreferences(false)} />;
-  }
 
   return (
     <YStack flex={1} bg="$background">
@@ -71,13 +66,18 @@ export default function HomeScreen() {
       <FloatingToolBar
         onPreferencesPress={() => setShowPreferences(true)}
         onAddWordPress={() => setShowAddWordSheet(true)}
-        isVisible={!showAddWordSheet}
+        isVisible={!showAddWordSheet && !showPreferences}
       />
 
       <AddWordSheet
         open={showAddWordSheet}
         onOpenChange={setShowAddWordSheet}
         onAddWord={handleAddWord}
+      />
+
+      <PreferencesScreen
+        open={showPreferences}
+        onOpenChange={setShowPreferences}
       />
     </YStack>
   );
