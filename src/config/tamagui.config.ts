@@ -87,7 +87,7 @@ const tamaguiConfig = createTamagui({
     quickly: {
       damping: 10,
       mass: 1,
-      stiffness: 200,
+      stiffness: 250,
     },
   }),
 });

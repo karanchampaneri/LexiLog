@@ -1,4 +1,10 @@
-import React from "react";
+import React, {
+  useCallback,
+  useMemo,
+  useRef,
+  useEffect,
+  useState,
+} from "react";
 import {
   YStack,
   XStack,
@@ -7,108 +13,157 @@ import {
   Separator,
   ScrollView,
   Card,
+  Switch,
 } from "tamagui";
 
-export default function PreferencesScreen(props) {
-  const { onBack } = props;
+import BottomSheet, {
+  BottomSheetView,
+  BottomSheetBackdrop,
+} from "@gorhom/bottom-sheet";
+
+export default function PreferencesScreen({ open, onOpenChange }) {
+  const bottomSheetRef = useRef(null);
+  const [contentHeight, setContentHeight] = useState(200);
+  const [isDarkMode, setIsDarkMode] = useState(false); // Dummy state for testing
+
+  // Dynamic snap points based on content
+  const snapPoints = useMemo(() => {
+    const minHeight = 200; // Minimum height
+    const maxHeight = 600; // Maximum height
+    const calculatedHeight = Math.min(
+      Math.max(contentHeight + 100, minHeight),
+      maxHeight
+    ); // +100 for header
+    return [calculatedHeight];
+  }, [contentHeight]);
+
+  // Handle content layout to measure height
+  const handleContentLayout = useCallback((event) => {
+    const { height } = event.nativeEvent.layout;
+    setContentHeight(height);
+  }, []);
+
+  // Handle open/close via ref
+  useEffect(() => {
+    if (open) {
+      bottomSheetRef.current?.expand();
+    } else {
+      bottomSheetRef.current?.close();
+    }
+  }, [open]);
+
+  // Backdrop component
+  const renderBackdrop = useCallback(
+    (props) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        opacity={0.6}
+        onPress={() => onOpenChange(false)}
+      />
+    ),
+    [onOpenChange]
+  );
+
+  const handleSheetChanges = useCallback(
+    (index) => {
+      if (index === -1) {
+        onOpenChange(false);
+      }
+    },
+    [onOpenChange]
+  );
 
   return (
-    <YStack flex={1} backgroundColor="$background">
-      {/* Header */}
-      <XStack
-        alignItems="center"
-        justifyContent="space-between"
-        padding="$4"
-        paddingTop="$6"
-        borderBottomWidth={1}
-        borderBottomColor="$borderColor"
-      >
-        <Button
-          size="$3"
-          variant="outlined"
-          onPress={onBack}
-          color="$color"
-          borderColor="$borderColor"
-        >
-          <Text>← Back</Text>
-        </Button>
-        <Text fontSize="$6" fontWeight="bold" color="$color">
-          Preferences
-        </Text>
-        <YStack width={60} />
-      </XStack>
-
-      <ScrollView flex={1}>
-        <YStack padding="$4" gap="$6">
-          {/* General Settings Section */}
-          <YStack gap="$4">
-            <Text fontSize="$5" fontWeight="600" color="$color">
-              📱 General
+    <BottomSheet
+      ref={bottomSheetRef}
+      index={-1}
+      snapPoints={snapPoints}
+      onChange={handleSheetChanges}
+      backdropComponent={renderBackdrop}
+      enablePanDownToClose
+      style={{ zIndex: 1000 }}
+    >
+      <BottomSheetView style={{ flex: 1 }}>
+        <YStack flex={1}>
+          {/* Header */}
+          <XStack
+            alignItems="center"
+            justifyContent="space-between"
+            padding="$4"
+            paddingTop="$2"
+            borderBottomWidth={1}
+            borderBottomColor="$borderColor"
+          >
+            <Text fontSize="$6" fontWeight="bold" color="$color">
+              Preferences
             </Text>
+            <YStack width={60} />
+          </XStack>
 
+          {/* Content Area */}
+          <YStack padding="$4" gap="$4" onLayout={handleContentLayout}>
+            {/* Dark Mode Toggle */}
             <Card
               backgroundColor="$card"
               padding="$4"
               borderRadius="$4"
               borderWidth={1}
-              borderColor="$borderColor"
-              opacity={0.6}
+              borderColor="$border"
             >
-              <YStack gap="$3">
-                <Text fontSize="$4" fontWeight="500" color="$color">
-                  Coming Soon
-                </Text>
-                <YStack gap="$2">
-                  <Text fontSize="$3" color="$gray10">
-                    • Push Notifications
+              <XStack alignItems="center" justifyContent="space-between">
+                <YStack flex={1} gap="$1">
+                  <Text fontSize="$4" fontWeight="500" color="$color">
+                    Dark Mode
                   </Text>
-                  <Text fontSize="$3" color="$gray10">
-                    • Export & Import Data
-                  </Text>
-                  <Text fontSize="$3" color="$gray10">
-                    • Language Settings
-                  </Text>
-                  <Text fontSize="$3" color="$gray10">
-                    • Font Size Options
+                  <Text fontSize="$3" color="$color" opacity={0.6}>
+                    Switch between light and dark themes
                   </Text>
                 </YStack>
-              </YStack>
+
+                <Switch
+                  size="$3"
+                  checked={isDarkMode}
+                  onCheckedChange={setIsDarkMode}
+                  animation={"quickly"}
+                >
+                  <Switch.Thumb />
+                </Switch>
+              </XStack>
             </Card>
-          </YStack>
-
-          <Separator />
-
-          {/* About Section */}
-          <YStack gap="$4">
-            <Text fontSize="$5" fontWeight="600" color="$color">
-              ℹ️ About
-            </Text>
 
             <Card
               backgroundColor="$card"
               padding="$4"
               borderRadius="$4"
               borderWidth={1}
-              borderColor="$borderColor"
+              borderColor="$border"
             >
-              <YStack gap="$3" alignItems="center">
-                <Text fontSize="$6" fontWeight="bold" color="$color">
-                  📘 LexiLog
-                </Text>
-                <Text fontSize="$3" color="$gray10" textAlign="center">
-                  Your personal vocabulary builder
-                </Text>
-                <Text fontSize="$2" color="$gray9" textAlign="center">
-                  Version 1.0.0
-                </Text>
-              </YStack>
-            </Card>
-          </YStack>
+              <XStack alignItems="center" justifyContent="space-between">
+                <YStack flex={1} gap="$1">
+                  <Text fontSize="$4" fontWeight="500" color="$color">
+                    Account
+                  </Text>
+                  <Text fontSize="$3" color="$color" opacity={0.6}>
+                    Manage your profile and sign-in
+                  </Text>
+                </YStack>
 
-          {/* Bottom Spacing */}
-          <YStack height={40} />
+                {/* Optional: Replace with an icon if you prefer */}
+                <Text fontSize="$6" opacity={0.3}>
+                  ›
+                </Text>
+              </XStack>
+            </Card>
+
+            {/* Placeholder text */}
+            <Text fontSize="$3" color="$color" opacity={0.4} textAlign="center">
+              More settings will appear here...
+            </Text>
+          </YStack>
         </YStack>
-      </ScrollView>
-    </YStack>
+      </BottomSheetView>
+    </BottomSheet>
   );
 }
