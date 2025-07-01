@@ -1,7 +1,8 @@
-import { TamaguiProvider } from "tamagui";
+import { TamaguiProvider, YStack } from "tamagui";
 import tamaguiConfig from "../config/tamagui.config";
 import HomeScreen from "./HomeScreen";
 import { useEffect } from "react";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import {
   useFonts,
@@ -36,8 +37,14 @@ export default function App() {
   }
 
   return (
-    <TamaguiProvider config={tamaguiConfig}>
-      <HomeScreen />
-    </TamaguiProvider>
+    <SafeAreaProvider>
+      <TamaguiProvider config={tamaguiConfig}>
+        <YStack f={1} bg="$background">
+          <SafeAreaView style={{ flex: 1 }}>
+            <HomeScreen />
+          </SafeAreaView>
+        </YStack>
+      </TamaguiProvider>
+    </SafeAreaProvider>
   );
 }
