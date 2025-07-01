@@ -35,3 +35,104 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# IDE and Editor files
+.vscode/settings.json
+.vscode/launch.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# Temporary folders
+tmp/
+temp/
+
+# Tamagui specific
+.tamagui/
+
+# React Native / Expo specific
+*.hprof
+.cxx/
+*.keystore
+!debug.keystore
+
+# Flipper
+.flipper/
+
+# Bundle artifacts
+*.bundle
+
+# CocoaPods (iOS)
+ios/Pods/
+ios/Podfile.lock
+
+# Gradle (Android)
+android/.gradle/
+android/app/build/
+android/build/
+android/gradlew
+android/gradlew.bat
+android/local.properties
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+
+# EAS
+.easignore
+
+# Local configuration files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
