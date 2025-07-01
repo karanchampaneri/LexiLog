@@ -1,3 +1,5 @@
+### NEW APP
+
 # LexiLog - Expo + Tamagui App
 
 A React Native application built with Expo and Tamagui UI library for beautiful, performant mobile interfaces.
