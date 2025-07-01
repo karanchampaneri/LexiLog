@@ -43,13 +43,22 @@ Then choose your platform:
 ## 📁 Project Structure
 
 ```
-├── App.js                 # Main application component
-├── tamagui.config.ts      # Tamagui configuration
-├── metro.config.js        # Metro bundler configuration
-├── babel.config.js        # Babel configuration
-├── assets/               # Static assets (images, fonts, etc.)
-└── .github/              # GitHub configuration
-    └── copilot-instructions.md
+├── src/
+│   ├── components/          # Reusable components
+│   ├── config/              # Configuration files
+│   │   └── tamagui.config.ts
+│   ├── screens/             # Screen components
+│   │   ├── App.jsx          # Entry point
+│   │   └── HomeScreen.jsx   # Home screen
+├── index.js                 # Entry point updated to reflect new structure
+├── README.md                # Project documentation
+├── metro.config.js          # Metro bundler configuration
+├── babel.config.js          # Babel configuration
+├── tsconfig.json            # TypeScript configuration
+├── assets/                  # Static assets
+├── package.json             # Project dependencies
+├── .github/                 # GitHub-specific files
+│   └── copilot-instructions.md
 ```
 
 ## 🎨 Tamagui Usage
@@ -59,7 +68,7 @@ Tamagui is now configured and ready to use. Here are some examples:
 ### Layout Components
 
 ```jsx
-import { YStack, XStack } from 'tamagui'
+import { YStack, XStack } from 'tamagui';
 
 // Vertical stack
 <YStack space="$4">
