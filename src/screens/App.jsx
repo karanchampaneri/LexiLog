@@ -2,7 +2,7 @@ import { TamaguiProvider, YStack } from "tamagui";
 import tamaguiConfig from "../config/tamagui.config";
 import HomeScreen from "./HomeScreen";
 import { useEffect } from "react";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import {
   useFonts,
@@ -37,14 +37,12 @@ export default function App() {
   }
 
   return (
-    <SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <TamaguiProvider config={tamaguiConfig}>
-        <YStack f={1} bg="$background">
-          <SafeAreaView style={{ flex: 1 }}>
-            <HomeScreen />
-          </SafeAreaView>
+        <YStack flex={1} bg="$background">
+          <HomeScreen />
         </YStack>
       </TamaguiProvider>
-    </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

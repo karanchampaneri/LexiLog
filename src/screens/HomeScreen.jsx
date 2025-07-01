@@ -6,7 +6,7 @@ import { YStack, Text, ScrollView } from "tamagui";
 import { loadWords, saveWords } from "../services/storageService";
 
 // Local Imports
-import AddWordForm from "../components/AddWordForm";
+import AddWordSheet from "../components/AddWordSheet";
 import WordCard from "../components/WordCard"; // Import the WordCard component to display each word
 import FloatingToolBar from "../components/FloatingToolBar";
 import PreferencesScreen from "./PreferencesScreen";
@@ -14,6 +14,7 @@ import PreferencesScreen from "./PreferencesScreen";
 export default function HomeScreen() {
   const [words, setWords] = useState([]); // stores the list of words when a new word is added.
   const [showPreferences, setShowPreferences] = useState(false); // state to manage navigation to preferences screen
+  const [showAddWordSheet, setShowAddWordSheet] = useState(false); // state to manage add word sheet visibility
 
   useEffect(() => {
     // useEffect runs once when the component loads, inside call loadWords to fetch the saved words from storage
@@ -36,29 +37,48 @@ export default function HomeScreen() {
   }
 
   return (
-    <YStack f={1} bg="$background">
+    <YStack flex={1} bg="$background">
       <ScrollView
         contentContainerStyle={{
-          padding: 16,
-          paddingBottom: 100, // Extra space for floating toolbar
+          paddingHorizontal: 20,
+          paddingTop: 60, // Safe area for status bar
+          paddingBottom: 120, // Extra space for floating toolbar
         }}
+        showsVerticalScrollIndicator={false}
       >
         <YStack gap="$4">
-          <Text fontSize="$8" fontWeight="bold" textAlign="center" pt="$6">
+          <Text fontSize="$8" fontWeight="bold" textAlign="center" mb="$4">
             📘 LexiLog
           </Text>
 
-          <AddWordForm onAddWord={handleAddWord} />
-
-          <YStack gap="$2" pt="$4">
-            {words.map((word, index) => (
-              <WordCard key={index} word={word} />
-            ))}
+          <YStack gap="$2">
+            {words.length === 0 ? (
+              <YStack space="$4" paddingVertical="$8" alignItems="center">
+                <Text fontSize="$6" color="$gray10" textAlign="center">
+                  No words yet!
+                </Text>
+                <Text fontSize="$4" color="$gray8" textAlign="center">
+                  Tap the + button below to add your first word
+                </Text>
+              </YStack>
+            ) : (
+              words.map((word, index) => <WordCard key={index} word={word} />)
+            )}
           </YStack>
         </YStack>
       </ScrollView>
 
-      <FloatingToolBar onPreferencesPress={() => setShowPreferences(true)} />
+      <FloatingToolBar
+        onPreferencesPress={() => setShowPreferences(true)}
+        onAddWordPress={() => setShowAddWordSheet(true)}
+        isVisible={!showAddWordSheet}
+      />
+
+      <AddWordSheet
+        open={showAddWordSheet}
+        onOpenChange={setShowAddWordSheet}
+        onAddWord={handleAddWord}
+      />
     </YStack>
   );
 }

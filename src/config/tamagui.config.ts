@@ -1,5 +1,6 @@
 import { config as baseConfig } from "@tamagui/config/v3";
 import { createTamagui, createFont } from "tamagui";
+import { createAnimations } from "@tamagui/animations-react-native";
 
 // Define custom fonts
 const appFont = createFont({
@@ -68,6 +69,27 @@ const tamaguiConfig = createTamagui({
     ...baseConfig.themes,
     ...customThemes,
   },
+  animations: createAnimations({
+    fast: {
+      damping: 20,
+      mass: 1.2,
+      stiffness: 250,
+    },
+    medium: {
+      damping: 10,
+      mass: 0.9,
+      stiffness: 100,
+    },
+    slow: {
+      damping: 20,
+      stiffness: 60,
+    },
+    quickly: {
+      damping: 10,
+      mass: 1,
+      stiffness: 200,
+    },
+  }),
 });
 
 export type AppConfig = typeof tamaguiConfig;
