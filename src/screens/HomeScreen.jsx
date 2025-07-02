@@ -11,6 +11,7 @@ import { useWords } from "../context/WordContext";
 // Local Imports
 import AddWordSheet from "../components/AddWordSheet";
 import WordCard from "../components/WordCard";
+import HomeScreenWordCard from "../components/HomeScreenWordCard";
 import FloatingToolBar from "../components/FloatingToolBar";
 import PreferencesScreen from "./PreferencesScreen";
 
@@ -18,6 +19,14 @@ export default function HomeScreen() {
   const { words, loading, addWord } = useWords(); // Use WordContext
   const [showPreferences, setShowPreferences] = useState(false);
   const [showAddWordSheet, setShowAddWordSheet] = useState(false);
+
+  // Get the latest word (most recently added)
+  const latestWord = words.length > 0 ? words[words.length - 1] : null;
+
+  const handleWordsListPress = () => {
+    // Placeholder for future navigation to words list
+    console.log("Navigate to words list");
+  };
 
   const handleAddWord = async (wordData) => {
     try {
@@ -30,62 +39,68 @@ export default function HomeScreen() {
 
   return (
     <YStack flex={1} bg="$background">
-      <ScrollView
-        contentContainerStyle={{
-          paddingHorizontal: 20,
-          paddingTop: 60, // Safe area for status bar
-          paddingBottom: 120, // Extra space for floating toolbar
-        }}
-        showsVerticalScrollIndicator={false}
+      {/* Pill-shaped Word Counter - Fixed at top */}
+      <YStack
+        position="absolute"
+        top={0}
+        left={0}
+        right={0}
+        alignItems="center"
+        marginTop="$12"
+        zIndex={10}
       >
-        <YStack gap="$4">
-          {/* Pill-shaped Word Counter */}
-          <XStack
-            backgroundColor="white"
-            borderRadius="$8"
-            paddingHorizontal="$4"
-            paddingVertical="$1"
-            alignItems="center"
-            gap="$2"
-            alignSelf="center"
-            marginTop="$5"
-          >
-            {/* icon */}
-            <Bookmark size={12} color="$gray8" />
-            {/* Word Count */}
-            <Text fontSize="$2" fontWeight="500" color="$gray8">
-              {words.length}
-            </Text>
-          </XStack>
+        <XStack
+          backgroundColor="white"
+          borderRadius="$8"
+          paddingHorizontal="$4"
+          paddingVertical="$1"
+          alignItems="center"
+          gap="$2"
+        >
+          {/* icon */}
+          <Bookmark size={12} color="$gray8" />
+          {/* Word Count */}
+          <Text fontSize="$2" fontWeight="500" color="$gray8">
+            {words.length}
+          </Text>
+        </XStack>
+      </YStack>
 
-          <YStack gap="$2">
-            {loading ? (
-              <YStack gap="$4" paddingVertical="$8" alignItems="center">
-                <Text fontSize="$4" color="$gray10" textAlign="center">
-                  Loading words...
-                </Text>
-              </YStack>
-            ) : words.length === 0 ? (
-              <YStack gap="$4" paddingVertical="$8" alignItems="center">
-                <Text fontSize="$6" color="$gray10" textAlign="center">
-                  No words yet!
-                </Text>
-                <Text fontSize="$4" color="$gray8" textAlign="center">
-                  Tap the + button below to add your first word
-                </Text>
-              </YStack>
-            ) : (
-              words.map((word, index) => (
-                <WordCard key={word.id || index} word={word} />
-              ))
-            )}
+      {/* Main Content - Centered */}
+      <YStack flex={1} justifyContent="center" alignItems="center">
+        {loading ? (
+          <YStack gap="$4" alignItems="center">
+            <Text fontSize="$4" color="$gray10" textAlign="center">
+              Loading words...
+            </Text>
           </YStack>
-        </YStack>
-      </ScrollView>
+        ) : words.length === 0 ? (
+          <YStack gap="$4" alignItems="center" paddingHorizontal="$6">
+            <Text fontSize="$6" color="$gray10" textAlign="center">
+              No words yet!
+            </Text>
+            <Text fontSize="$4" color="$gray8" textAlign="center">
+              Tap the + button below to add your first word
+            </Text>
+          </YStack>
+        ) : latestWord ? (
+          <HomeScreenWordCard word={latestWord} />
+        ) : (
+          <YStack gap="$4" alignItems="center" paddingHorizontal="$6">
+            <Text fontSize="$6" color="$gray10" textAlign="center">
+              No words yet!
+            </Text>
+            <Text fontSize="$4" color="$gray8" textAlign="center">
+              Tap the + button below to add your first word
+            </Text>
+          </YStack>
+        )}
+      </YStack>
 
       <FloatingToolBar
         onPreferencesPress={() => setShowPreferences(true)}
         onAddWordPress={() => setShowAddWordSheet(true)}
+        onWordsListPress={handleWordsListPress}
         isVisible={!showAddWordSheet && !showPreferences}
       />
 
