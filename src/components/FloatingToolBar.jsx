@@ -124,7 +124,7 @@ export default function FloatingToolBar({
                   elevation="$20"
                   pressStyle={{ scale: 0.95 }}
                 >
-                  Add Word
+                  <Text>Add Word</Text>
                 </Button>
 
                 {/* Right Button */}
