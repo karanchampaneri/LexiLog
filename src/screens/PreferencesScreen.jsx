@@ -4,6 +4,7 @@ import React, {
   useRef,
   useEffect,
   useState,
+  Navigation,
 } from "react";
 import {
   YStack,
@@ -15,12 +16,15 @@ import {
   Card,
   Switch,
 } from "tamagui";
+import { signOut } from "firebase/auth";
+import { auth } from "../config/firebase"; // Adjust the import path as needed
 import { useWords } from "../context/WordContext";
 
 import BottomSheet, {
   BottomSheetView,
   BottomSheetBackdrop,
 } from "@gorhom/bottom-sheet";
+import { X } from "@tamagui/lucide-icons";
 
 export default function PreferencesScreen({ open, onOpenChange }) {
   const bottomSheetRef = useRef(null);
@@ -60,6 +64,15 @@ export default function PreferencesScreen({ open, onOpenChange }) {
       setIsDeleting(false);
     }
   }, [deleteAllWords, words.length]);
+
+  const handleLogout = useCallback(async () => {
+    try {
+      await signOut(auth);
+      console.log("User signed out successfully");
+    } catch (error) {
+      console.error("Sign out error:", error);
+    }
+  }, []);
 
   // Handle open/close via ref
   useEffect(() => {
@@ -208,6 +221,29 @@ export default function PreferencesScreen({ open, onOpenChange }) {
                     : `Delete All ${words.length} Words`}
                 </Button>
               </YStack>
+            </Card>
+
+            <Card
+              backgroundColor="$card"
+              padding="$4"
+              borderRadius="$4"
+              borderWidth={1}
+              borderColor="$border"
+              onPress={handleLogout}
+            >
+              <XStack alignItems="center" justifyContent="space-between">
+                <YStack flex={1} gap="$1">
+                  <Text fontSize="$4" fontWeight="500" color="$color">
+                    Log Out
+                  </Text>
+                  <Text fontSize="$3" color="$color" opacity={0.6}>
+                    Sign out of your account
+                  </Text>
+                </YStack>
+                <Text fontSize="$6" opacity={0.3}>
+                  ⎋
+                </Text>
+              </XStack>
             </Card>
 
             {/* Placeholder text */}
