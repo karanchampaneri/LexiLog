@@ -3,6 +3,7 @@ import tamaguiConfig from "../config/tamagui.config";
 import HomeScreen from "./HomeScreen";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { WordProvider } from "../context/WordContext";
 
 import {
   useFonts,
@@ -39,9 +40,11 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <TamaguiProvider config={tamaguiConfig}>
-        <YStack flex={1} bg="$background">
-          <HomeScreen />
-        </YStack>
+        <WordProvider>
+          <YStack flex={1} bg="$background">
+            <HomeScreen />
+          </YStack>
+        </WordProvider>
       </TamaguiProvider>
     </GestureHandlerRootView>
   );

@@ -1,34 +1,31 @@
 // React Imports
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // Tamagui Imports
-import { YStack, Text, ScrollView } from "tamagui";
-import { loadWords, saveWords } from "../services/storageService";
+import { YStack, Text, ScrollView, Button, XStack } from "tamagui";
+import { Bookmark } from "@tamagui/lucide-icons";
+
+// Context Imports
+import { useWords } from "../context/WordContext";
 
 // Local Imports
 import AddWordSheet from "../components/AddWordSheet";
-import WordCard from "../components/WordCard"; // Import the WordCard component to display each word
+import WordCard from "../components/WordCard";
 import FloatingToolBar from "../components/FloatingToolBar";
 import PreferencesScreen from "./PreferencesScreen";
 
 export default function HomeScreen() {
-  const [words, setWords] = useState([]); // stores the list of words when a new word is added.
-  const [showPreferences, setShowPreferences] = useState(false); // state to manage preferences sheet visibility
-  const [showAddWordSheet, setShowAddWordSheet] = useState(false); // state to manage add word sheet visibility
+  const { words, loading, addWord } = useWords(); // Use WordContext
+  const [showPreferences, setShowPreferences] = useState(false);
+  const [showAddWordSheet, setShowAddWordSheet] = useState(false);
 
-  useEffect(() => {
-    // useEffect runs once when the component loads, inside call loadWords to fetch the saved words from storage
-    const fetchWords = async () => {
-      const saved = await loadWords(); // loads the words from storage
-      setWords(saved); // sets the words state with the loaded words
-    };
-    fetchWords();
-  }, []);
-
-  const handleAddWord = async (newWord) => {
-    const updatedWords = [...words, newWord]; // creates a new array with the existing words and the new word
-    setWords((prevWords) => [...prevWords, newWord]); // adds the new word to the list
-    await saveWords(updatedWords); // saves the updated words list to storage
+  const handleAddWord = async (wordData) => {
+    try {
+      await addWord(wordData); // Use context method to add word
+    } catch (error) {
+      console.error("Error adding word:", error);
+      throw error; // Re-throw to let AddWordSheet handle the error
+    }
   };
 
   return (
@@ -42,13 +39,34 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <YStack gap="$4">
-          <Text fontSize="$8" fontWeight="bold" textAlign="center" mb="$4">
-            📘 LexiLog
-          </Text>
+          {/* Pill-shaped Word Counter */}
+          <XStack
+            backgroundColor="white"
+            borderRadius="$8"
+            paddingHorizontal="$4"
+            paddingVertical="$1"
+            alignItems="center"
+            gap="$2"
+            alignSelf="center"
+            marginTop="$5"
+          >
+            {/* icon */}
+            <Bookmark size={12} color="$gray8" />
+            {/* Word Count */}
+            <Text fontSize="$2" fontWeight="500" color="$gray8">
+              {words.length}
+            </Text>
+          </XStack>
 
           <YStack gap="$2">
-            {words.length === 0 ? (
-              <YStack space="$4" paddingVertical="$8" alignItems="center">
+            {loading ? (
+              <YStack gap="$4" paddingVertical="$8" alignItems="center">
+                <Text fontSize="$4" color="$gray10" textAlign="center">
+                  Loading words...
+                </Text>
+              </YStack>
+            ) : words.length === 0 ? (
+              <YStack gap="$4" paddingVertical="$8" alignItems="center">
                 <Text fontSize="$6" color="$gray10" textAlign="center">
                   No words yet!
                 </Text>
@@ -57,7 +75,7 @@ export default function HomeScreen() {
                 </Text>
               </YStack>
             ) : (
-              words.map((word, index) => <WordCard key={index} word={word} />)
+              words.map((word) => <WordCard key={word.id} word={word} />)
             )}
           </YStack>
         </YStack>

@@ -15,6 +15,7 @@ import {
   Card,
   Switch,
 } from "tamagui";
+import { useWords } from "../context/WordContext";
 
 import BottomSheet, {
   BottomSheetView,
@@ -25,6 +26,8 @@ export default function PreferencesScreen({ open, onOpenChange }) {
   const bottomSheetRef = useRef(null);
   const [contentHeight, setContentHeight] = useState(200);
   const [isDarkMode, setIsDarkMode] = useState(false); // Dummy state for testing
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { words, deleteAllWords } = useWords(); // Add deleteAllWords method
 
   // Dynamic snap points based on content
   const snapPoints = useMemo(() => {
@@ -42,6 +45,21 @@ export default function PreferencesScreen({ open, onOpenChange }) {
     const { height } = event.nativeEvent.layout;
     setContentHeight(height);
   }, []);
+
+  // Handle delete all words
+  const handleDeleteAllWords = useCallback(async () => {
+    if (words.length === 0) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteAllWords();
+      console.log("All words deleted successfully");
+    } catch (error) {
+      console.error("Error deleting all words:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  }, [deleteAllWords, words.length]);
 
   // Handle open/close via ref
   useEffect(() => {
@@ -155,6 +173,41 @@ export default function PreferencesScreen({ open, onOpenChange }) {
                   ›
                 </Text>
               </XStack>
+            </Card>
+
+            {/* Debug Section */}
+            <Card
+              backgroundColor="$card"
+              padding="$4"
+              borderRadius="$4"
+              borderWidth={1}
+              borderColor="$border"
+            >
+              <YStack gap="$3">
+                <XStack alignItems="center" justifyContent="space-between">
+                  <YStack flex={1} gap="$1">
+                    <Text fontSize="$4" fontWeight="500" color="$color">
+                      Debug Tools
+                    </Text>
+                    <Text fontSize="$3" color="$color" opacity={0.6}>
+                      {words.length} words stored
+                    </Text>
+                  </YStack>
+                </XStack>
+
+                <Button
+                  theme="red"
+                  onPress={handleDeleteAllWords}
+                  disabled={words.length === 0 || isDeleting}
+                  size="$3"
+                >
+                  {isDeleting
+                    ? "Deleting..."
+                    : words.length === 0
+                    ? "No words to delete"
+                    : `Delete All ${words.length} Words`}
+                </Button>
+              </YStack>
             </Card>
 
             {/* Placeholder text */}
