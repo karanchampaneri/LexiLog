@@ -13,7 +13,7 @@ export default function AddWordSheet({ open, onOpenChange, onAddWord }) {
   const theme = useTheme();
 
   // Back to smaller snap point since we only need one input
-  const snapPoints = useMemo(() => ["40%"], []);
+  const snapPoints = useMemo(() => ["45%"], []);
 
   // Handle open/close via ref
   useEffect(() => {
