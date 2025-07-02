@@ -75,7 +75,9 @@ export default function HomeScreen() {
                 </Text>
               </YStack>
             ) : (
-              words.map((word) => <WordCard key={word.id} word={word} />)
+              words.map((word, index) => (
+                <WordCard key={word.id || index} word={word} />
+              ))
             )}
           </YStack>
         </YStack>

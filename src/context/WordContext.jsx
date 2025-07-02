@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { wordService } from "../services/wordService";
+import { Word } from "../models/word";
 
 const WordContext = createContext();
 
@@ -24,6 +25,8 @@ export const WordProvider = ({ children }) => {
     try {
       setLoading(true);
       const savedWords = await wordService.getAllWords();
+      // Initialize the Word counter based on existing words
+      Word.initializeCounter(savedWords);
       setWords(savedWords);
     } catch (error) {
       console.error("Error loading words:", error);
