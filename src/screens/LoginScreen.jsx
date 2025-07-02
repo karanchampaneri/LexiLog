@@ -14,7 +14,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "../config/firebase"; // Adjust the import path as needed
+import { auth, db } from "../config/firebase"; // Adjust the import path as needed
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -41,6 +42,13 @@ export default function LoginScreen() {
           email,
           password
         );
+        // Add user to Firestore
+        const user = userCredential.user;
+        const userRef = doc(db, "users", user.uid);
+        await setDoc(userRef, {
+          email: user.email,
+          createdAt: serverTimestamp(),
+        });
       }
 
       // Authentication state will be automatically handled by onAuthStateChanged
