@@ -34,7 +34,7 @@ export default function WordCard({ word }) {
           color="$color"
           fontStyle="italic"
         >
-          {word.type && `(${word.type}) `}
+          {word.type && <Text>({word.type}) </Text>}
           {word.definition}
         </Text>
       )}

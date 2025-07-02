@@ -214,11 +214,13 @@ export default function PreferencesScreen({ open, onOpenChange }) {
                   disabled={words.length === 0 || isDeleting}
                   size="$3"
                 >
-                  {isDeleting
-                    ? "Deleting..."
-                    : words.length === 0
-                    ? "No words to delete"
-                    : `Delete All ${words.length} Words`}
+                  <Text>
+                    {isDeleting
+                      ? "Deleting..."
+                      : words.length === 0
+                      ? "No words to delete"
+                      : `Delete All ${words.length} Words`}
+                  </Text>
                 </Button>
               </YStack>
             </Card>

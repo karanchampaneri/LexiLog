@@ -21,7 +21,7 @@ export default function HomeScreen() {
   const [showAddWordSheet, setShowAddWordSheet] = useState(false);
 
   // Get the latest word (most recently added)
-  const latestWord = words.length > 0 ? words[words.length - 1] : null;
+  const latestWord = words.length > 0 ? words[0] : null;
 
   const handleWordsListPress = () => {
     // Placeholder for future navigation to words list

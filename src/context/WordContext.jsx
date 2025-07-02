@@ -25,9 +25,8 @@ export const WordProvider = ({ children }) => {
     try {
       setLoading(true);
       const savedWords = await wordService.getAllWords();
-      // Initialize the Word counter based on existing words
-      Word.initializeCounter(savedWords);
-      setWords(savedWords);
+      const sortedWords = savedWords.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+      setWords(sortedWords);
     } catch (error) {
       console.error("Error loading words:", error);
     } finally {
@@ -38,7 +37,9 @@ export const WordProvider = ({ children }) => {
   const addWord = async (wordData) => {
     try {
       const newWord = await wordService.addWord(wordData);
-      setWords((prevWords) => [...prevWords, newWord]);
+      if (newWord) {
+        setWords((prevWords) => [newWord, ...prevWords]);
+      }
       return newWord;
     } catch (error) {
       console.error("Error adding word:", error);
