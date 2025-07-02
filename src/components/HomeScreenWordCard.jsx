@@ -28,7 +28,7 @@ export default function HomeScreenWordCard({ word }) {
 
       {/* Definition */}
       <Text fontSize="$5" textAlign="center" color="$color" lineHeight="$6">
-        {word.type && `(${word.type}) `}
+        {word.type && <Text>({word.type}) </Text>}
         {word.definition || "Definition will be added automatically..."}
       </Text>
 
