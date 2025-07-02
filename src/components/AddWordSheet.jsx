@@ -146,7 +146,7 @@ export default function AddWordSheet({ open, onOpenChange, onAddWord }) {
               disabled={!word.trim() || isSubmitting}
               size="$4"
             >
-              {isSubmitting ? "adding word..." : "Add Word"}
+              {isSubmitting ? "Adding word..." : "Add Word"}
             </Button>
 
             <Button
