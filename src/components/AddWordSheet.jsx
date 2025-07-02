@@ -12,8 +12,8 @@ export default function AddWordSheet({ open, onOpenChange, onAddWord }) {
   const bottomSheetRef = useRef(null);
   const theme = useTheme();
 
-  // Use a larger snap point that works well with keyboard
-  const snapPoints = useMemo(() => ["50%"], []);
+  // Back to smaller snap point since we only need one input
+  const snapPoints = useMemo(() => ["40%"], []);
 
   // Handle open/close via ref
   useEffect(() => {
@@ -43,8 +43,20 @@ export default function AddWordSheet({ open, onOpenChange, onAddWord }) {
     if (trimmedWord && !isSubmitting) {
       setIsSubmitting(true);
       try {
-        await onAddWord(trimmedWord); // send word back to parent (HomeScreen)
-        setWord(""); // clear input field
+        // Create word object with just the word, other fields will be auto-filled by API
+        const wordData = {
+          word: trimmedWord,
+          pronunciation: "", // Will be filled by dictionary API
+          type: "", // Will be filled by dictionary API
+          definition: "", // Will be filled by dictionary API
+          example: "", // Will be filled by dictionary API
+        };
+
+        await onAddWord(wordData);
+
+        // Clear form field
+        setWord("");
+
         onOpenChange(false); // close the sheet
       } catch (error) {
         console.error("Error adding word:", error);
@@ -55,7 +67,8 @@ export default function AddWordSheet({ open, onOpenChange, onAddWord }) {
   };
 
   const handleClose = () => {
-    setWord(""); // clear input when closing
+    // Clear form field when closing
+    setWord("");
     setIsSubmitting(false);
     onOpenChange(false);
   };
@@ -63,7 +76,8 @@ export default function AddWordSheet({ open, onOpenChange, onAddWord }) {
   const handleSheetChanges = useCallback(
     (index) => {
       if (index === -1) {
-        setWord(""); // Clear input when sheet closes
+        // Clear form field when sheet closes
+        setWord("");
         setIsSubmitting(false);
         onOpenChange(false);
       }
@@ -85,13 +99,24 @@ export default function AddWordSheet({ open, onOpenChange, onAddWord }) {
       style={{ zIndex: 1000 }}
     >
       <BottomSheetView style={{ flex: 1, padding: 24 }}>
-        <YStack space="$4" flex={1}>
+        <YStack gap="$4" flex={1}>
           <Text fontSize="$6" fontWeight="bold" textAlign="center" mb="$2">
             Add New Word
           </Text>
 
+          <Text
+            fontSize="$4"
+            color="$color"
+            opacity={0.7}
+            textAlign="center"
+            mb="$3"
+          >
+            Enter a word and we'll look up the definition for you
+          </Text>
+
+          {/* Word Input - Only field needed */}
           <BottomSheetTextInput
-            placeholder="Enter a new word..."
+            placeholder="Enter a word..."
             value={word}
             onChangeText={setWord}
             onSubmitEditing={handleSubmit}
@@ -105,20 +130,23 @@ export default function AddWordSheet({ open, onOpenChange, onAddWord }) {
               borderRadius: 12,
               paddingHorizontal: 16,
               paddingVertical: 14,
-              fontSize: 16,
+              fontSize: 18,
               color: theme.color12?.val || "#212529",
               marginBottom: 16,
+              textAlign: "center",
+              fontWeight: "500",
             }}
             placeholderTextColor={theme.color9?.val || "#6c757d"}
           />
 
-          <YStack space="$3">
+          <YStack gap="$3">
             <Button
               theme="active"
               onPress={handleSubmit}
               disabled={!word.trim() || isSubmitting}
+              size="$4"
             >
-              {isSubmitting ? "Adding..." : "Add Word"}
+              {isSubmitting ? "Looking up..." : "Add Word"}
             </Button>
 
             <Button
