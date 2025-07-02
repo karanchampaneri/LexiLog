@@ -25,8 +25,8 @@ export const WordProvider = ({ children }) => {
     try {
       setLoading(true);
       const savedWords = await wordService.getAllWords();
-      
-      setWords(savedWords);
+      const sortedWords = savedWords.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+      setWords(sortedWords);
     } catch (error) {
       console.error("Error loading words:", error);
     } finally {
@@ -38,7 +38,7 @@ export const WordProvider = ({ children }) => {
     try {
       const newWord = await wordService.addWord(wordData);
       if (newWord) {
-        setWords((prevWords) => [...prevWords, newWord]);
+        setWords((prevWords) => [newWord, ...prevWords]);
       }
       return newWord;
     } catch (error) {
