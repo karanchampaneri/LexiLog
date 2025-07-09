@@ -7,6 +7,7 @@ import {
   deleteDoc,
   writeBatch,
   serverTimestamp,
+  getDoc,
 } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 
@@ -41,6 +42,24 @@ export const addWord = async (wordData) => {
     return { id: docRef.id, ...wordData };
   } catch (e) {
     console.error("Error adding word:", e);
+    return null;
+  }
+};
+
+// Get a single word by ID
+export const getWord = async (wordId) => {
+  try {
+    const wordsCollection = getWordsCollection();
+    const wordRef = doc(wordsCollection, wordId);
+    const docSnap = await getDoc(wordRef);
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() };
+    } else {
+      console.log("No such word!");
+      return null;
+    }
+  } catch (e) {
+    console.error("Error getting word:", e);
     return null;
   }
 };

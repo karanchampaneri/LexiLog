@@ -4,18 +4,8 @@ import React, {
   useRef,
   useEffect,
   useState,
-  Navigation,
 } from "react";
-import {
-  YStack,
-  XStack,
-  Text,
-  Button,
-  Separator,
-  ScrollView,
-  Card,
-  Switch,
-} from "tamagui";
+import { YStack, XStack, Text, Button, Card, Switch } from "tamagui";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase"; // Adjust the import path as needed
 import { useWords } from "../context/WordContext";

@@ -1,14 +1,5 @@
 import { useState } from "react";
-import {
-  YStack,
-  XStack,
-  Input,
-  Button,
-  Text,
-  Separator,
-  Spinner,
-  prevent,
-} from "tamagui";
+import { YStack, XStack, Input, Button, Text, Spinner } from "tamagui";
 
 import {
   signInWithEmailAndPassword,

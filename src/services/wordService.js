@@ -22,7 +22,13 @@ export const wordService = {
   },
 
   async updateWord(wordId, updatedData) {
-    return await storage.updateWord(wordId, updatedData);
+    try {
+      await storage.updateWord(wordId, updatedData);
+      return await storage.getWord(wordId);
+    } catch (error) {
+      console.error("Error updating word:", error);
+      throw error;
+    }
   },
 
   async deleteAllWords() {
