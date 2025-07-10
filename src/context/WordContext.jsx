@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { wordService } from "../services/wordService";
 import { Word } from "../models/word";
+import { getFormattedWordData } from "../utils/dictionaryApi";
 
 const WordContext = createContext();
 
@@ -25,7 +26,9 @@ export const WordProvider = ({ children }) => {
     try {
       setLoading(true);
       const savedWords = await wordService.getAllWords();
-      const sortedWords = savedWords.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+      const sortedWords = savedWords.sort(
+        (a, b) => b.createdAt.toMillis() - a.createdAt.toMillis()
+      );
       setWords(sortedWords);
     } catch (error) {
       console.error("Error loading words:", error);
@@ -34,15 +37,37 @@ export const WordProvider = ({ children }) => {
     }
   };
 
-  const addWord = async (wordData) => {
+  const addWord = async (word) => {
+    const tempId = `temp_${Date.now()}`;
+    const tempWord = new Word(word, "", "", "Loading definition...", "");
+    tempWord.id = tempId;
+
+    // Optimistically add the word to the UI
+    setWords((prevWords) => [tempWord, ...prevWords]);
+
     try {
-      const newWord = await wordService.addWord(wordData);
-      if (newWord) {
-        setWords((prevWords) => [newWord, ...prevWords]);
-      }
-      return newWord;
+      // Fetch full data in the background
+      const wordData = await getFormattedWordData(word);
+      const fullWordData = {
+        word: wordData.word,
+        pronunciation: wordData.phonetic || wordData.phoneticSpelling || "",
+        type: wordData.definitions?.[0]?.partOfSpeech || "",
+        definition: wordData.definitions?.[0]?.definition || "",
+        example: wordData.definitions?.[0]?.example || "",
+      };
+
+      // Add to Firestore and get the final word object with ID
+      const finalWord = await wordService.addWord(fullWordData);
+
+      // Update the UI with the final word data
+      setWords((prevWords) =>
+        prevWords.map((w) => (w.id === tempId ? finalWord : w))
+      );
+      return finalWord;
     } catch (error) {
       console.error("Error adding word:", error);
+      // If something fails, remove the temporary word
+      setWords((prevWords) => prevWords.filter((w) => w.id !== tempId));
       throw error;
     }
   };

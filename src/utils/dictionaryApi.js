@@ -62,6 +62,11 @@ function formatDictionary(entry) {
   };
 }
 
+export async function getFormattedWordData(word) {
+  const rawData = await fetchDefinition(word);
+  return formatDictionary(rawData);
+}
+
 // const word = process.argv[2]; // Replace with the word you want to look up
 
 // if (!word) {

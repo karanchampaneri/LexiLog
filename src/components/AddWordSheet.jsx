@@ -6,6 +6,26 @@ import BottomSheet, {
   BottomSheetTextInput,
 } from "@gorhom/bottom-sheet";
 
+import { getFormattedWordData } from "../utils/dictionaryApi";
+
+async function handleAddWord(userInput) {
+  try {
+    const wordData = await getFormattedWordData(userInput);
+
+    const newWord = {
+      word: wordData.word,
+      pronunciation: wordData.phonetic || wordData.phoneticSpelling || "",
+      type: wordData.definitions?.[0]?.partOfSpeech || "",
+      definition: wordData.definitions?.[0]?.definition || "",
+      example: wordData.definitions?.[0]?.example || "",
+    };
+    return newWord;
+  } catch (error) {
+    console.error("Error fetching word data:", error);
+    throw error;
+  }
+}
+
 export default function AddWordSheet({ open, onOpenChange, onAddWord }) {
   const [word, setWord] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,15 +64,15 @@ export default function AddWordSheet({ open, onOpenChange, onAddWord }) {
       setIsSubmitting(true);
       try {
         // Create word object with just the word, other fields will be auto-filled by API
-        const wordData = {
-          word: trimmedWord,
-          pronunciation: "", // Will be filled by dictionary API
-          type: "", // Will be filled by dictionary API
-          definition: "", // Will be filled by dictionary API
-          example: "", // Will be filled by dictionary API
-        };
+        // const wordData = {
+        //   word: trimmedWord,
+        //   pronunciation: "", // Will be filled by dictionary API
+        //   type: "", // Will be filled by dictionary API
+        //   definition: "", // Will be filled by dictionary API
+        //   example: "", // Will be filled by dictionary API
+        // };
 
-        await onAddWord(wordData);
+        await onAddWord(trimmedWord);
 
         // Clear form field
         setWord("");
