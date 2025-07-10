@@ -10,6 +10,7 @@ export const wordService = {
     const newWord = new Word(
       wordData.word,
       wordData.pronunciation || "",
+      wordData.audioUrl || "",
       wordData.type || "noun",
       wordData.definition || "",
       wordData.example || ""

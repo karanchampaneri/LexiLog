@@ -51,6 +51,7 @@ export const WordProvider = ({ children }) => {
       const fullWordData = {
         word: wordData.word,
         pronunciation: wordData.phonetic || wordData.phoneticSpelling || "",
+        audioUrl: wordData.audioUrl || "", // Optional audio URL
         type: wordData.definitions?.[0]?.partOfSpeech || "",
         definition: wordData.definitions?.[0]?.definition || "",
         example: wordData.definitions?.[0]?.example || "",

@@ -1,7 +1,16 @@
-import { YStack, Text } from "tamagui";
+import { YStack, Text, XStack, Button } from "tamagui";
+
+import { useAudioPlayer } from "../hooks/audioPlayer";
+import { AudioLines } from "@tamagui/lucide-icons";
 
 export default function HomeScreenWordCard({ word }) {
   if (!word) return null;
+
+  const { playSound } = useAudioPlayer(word.audioUrl); // Hook handles playback
+
+  const handlePronunciationPress = async () => {
+    playSound(); // Play the pronunciation audio
+  };
 
   return (
     <YStack
@@ -21,9 +30,17 @@ export default function HomeScreenWordCard({ word }) {
 
       {/* Pronunciation */}
       {word.pronunciation && (
-        <Text fontSize="$5" color="$gray10" textAlign="center">
-          {word.pronunciation}
-        </Text>
+        <XStack
+          alignItems="center"
+          justifyContent="center"
+          pressStyle={{ opacity: 0.6 }}
+          onPress={handlePronunciationPress}
+        >
+          <Text fontSize="$5" color="$gray10">
+            {word.pronunciation + " "}
+          </Text>
+          <AudioLines size={20} color="$gray10" />
+        </XStack>
       )}
 
       {/* Definition */}
